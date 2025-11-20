@@ -24,21 +24,38 @@ vim.opt.rtp:prepend(lazypath)
 local plugins = {
   { "catppuccin/nvim", name = "catppuccin", priority = 1000 },
   {
-    'nvim-telescope/telescope.nvim', tag = '0.1.9',
+    'nvim-telescope/telescope.nvim',
+     branch = 'master',
      dependencies = { 'nvim-lua/plenary.nvim' }
   },
-  { "nvim-treesitter/nvim-treesitter", build = ":TSUpdate" }
+  { "nvim-treesitter/nvim-treesitter", build = ":TSUpdate" },
+  {
+    "nvim-neo-tree/neo-tree.nvim",
+    branch = "v3.x",
+    dependencies = {
+      "nvim-lua/plenary.nvim",
+      "MunifTanjim/nui.nvim",
+      "nvim-tree/nvim-web-devicons",
+    },
+  }
 }
 local opts = {}
 
 require("lazy").setup(plugins,opts)
 local builtin = require("telescope.builtin")
-vim.keymap.set('n', '<C-p>', builtin.find_files, {}) -- use fuzzy files to find files
+vim.keymap.set('n', '<C-p>', function()
+  require('telescope.builtin').find_files({
+    previewer = true,       -- enable preview window
+    hidden = true,          -- show hidden files (optional)
+  })
+end)
+
 vim.keymap.set('n', '<leader>fg', builtin.live_grep, {}) -- live grep
+vim.keymap.set('n', '<C-n>', ':Neotree toggle<CR>', {})
 
 -- theme
 require("catppuccin").setup({
-  flavour = "latte",
+  flavour = "mocha",
 })
 
 local config = require("nvim-treesitter.configs")
